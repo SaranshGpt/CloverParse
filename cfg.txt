@@ -1,0 +1,69 @@
+
+Assignment  ->  NEW_IDENTIFIER '=' Value
+            |   NEW_IDENTIFIER '=' Range
+            |   NEW_IDENTIFIER '=' Condition
+            |   NEW_IDENTIFIER '=' Expression
+
+---------------------------------------------------------------------------------------------------------------
+
+Number      ->  V_IDENTIFIER
+            |   N_LITERAL
+            |   (Value)
+            |   '~' Number
+
+Value       ->  Value '|' Vxor
+            |   Vxor
+
+Vxor        ->  Vxor '^' Vand
+            |   Vand
+
+Vand        ->  Vand '&' Sum
+            |   Sum
+
+Sum         ->  Sum '+' Term
+            |   Sum '-' Term
+            |   Term
+
+Term        ->  Term '*' Number
+            |   Term '/' Number
+            |   Term '%' Number
+            |   Number
+
+---------------------------------------------------------------------------------------------------------------
+
+Range       ->  '[' Number ':' Number ',' Number ':' Number ']'
+            |   '[' Number ':' Number ',' Number ']'
+            |   '[' Number ',' Number ':' Number ']'
+            |   '[' Number, Number ']'
+            |   Range Range
+            |   R_IDENTIFIER
+
+----------------------------------------------------------------------------------------------------------------
+
+Condition   ->  Range CBody Endianness
+            |   '~' Condition
+
+CBody       ->  '<' Number, Number '>'
+            |    NumberList '}'
+
+NumberList  ->  NumberList ',' Number
+            |   '{' Number
+
+Endianness  ->  'L' | 'B'
+
+------------------------------------------------------------------------------------------------------------------
+
+Cond_Val    ->  Condition | '(' Expression ')' | C_IDENTIFIER | Expression | E_IDENTIFIER
+
+Expression  ->  Expression '|' Exor
+            |   Exor
+
+Exor        ->  Exor '^' Eand
+            |   Eand
+
+Eand        ->  Eand '&' CondVal
+            ->  Cond_Val
+
+---------------------------------------------------------------------------------------------------------------------
+
+//I am skipping the import and pattern construct. They will act similar to preprocession directive, and will be handled separately
