@@ -126,6 +126,7 @@ class StandardRuleset(CFGRuleSet):
 
         [Nodes.RANGE, Nodes.CONDITION_BODY, Nodes.ENDIANNESS]:                  Nodes.CONDITION,
         [Tokens.NEGATION, Nodes.CONDITION]:                                     Nodes.CONDITION,
+        [Types.CONDITION]:                                                      Nodes.CONDITION,
         
         [Tokens.LESS_THAN, Nodes.NUMBER, 
             Tokens.COMMA, 

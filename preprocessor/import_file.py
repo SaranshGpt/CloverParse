@@ -1,7 +1,7 @@
 import os
 
 from tokenise import Token, tokenise_line
-from parser.cfg_grammar import StandardRuleset as SR
+from syntax.cfg_grammar import StandardRuleset as SR
 
 def import_file(file_path: str) -> {list[list[Token]] , list[Token]}:
 

@@ -42,8 +42,9 @@ Range       ->  '[' Number ':' Number ',' Number ':' Number ']'
 
 Condition   ->  Range CBody Endianness
             |   '~' Condition
+            |   C_IDENTIFIER
 
-CBody       ->  '<' Number, Number '>'
+CBody       ->  '<' Number ',' Number '>'
             |    NumberList '}'
 
 NumberList  ->  NumberList ',' Number

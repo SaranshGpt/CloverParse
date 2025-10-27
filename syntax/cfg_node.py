@@ -35,14 +35,16 @@ class CFGRuleSet:
     def ruleset(self) -> dict[list[Types], Types]:
         pass
 
-    def reduce(self, nodes: list[CFGNode]) -> bool:
+    def reduce(nodes: list[CFGNode]) -> bool:
 
         for start in range (len(nodes)):
             
             stack_slice = nodes[start:]
 
-            if stack_slice in ruleset:
-                new_node_type = ruleset[stack_slice]
+            stack_slice_types = [node.type for node in stack_slice]
+
+            if stack_slice_types in ruleset:
+                new_node_type = ruleset[stack_slice_types]
 
                 new_node = CFGNode(new_node_type, stack_slice)
 
