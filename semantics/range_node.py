@@ -1,30 +1,9 @@
 from syntax.cfg_grammar import StandardRuleset as SR
 from syntax.cfg_node import CFGNode
 
-from semantics.value import process_value
+from semantics.value_node import process_value
 
-class Range:
-    def __init__(self, start: int, s_offset: int, end: int, e_offset: int):
-        self.start = start
-        self.s_offset = s_offset
-        self.end = end
-        self.e_offset = e_offset
-
-    def append(self, other):
-
-        self.start += other.start
-        self.s_offset += other.s_offset
-        self.end += other.end
-        self.e_offset += other.e_offset
-
-        if self.s_offset >= 8:
-            self.start += self.s_offset // 8
-            self.s_offset = self.s_offset % 8
-
-        if self.e_offset >= 8:
-            self.end += self.e_offset // 8
-            self.e_offset = self.e_offset % 8
-
+from primitives.range import Range
 
 def process_range(node: CFGNode) -> Range:
 

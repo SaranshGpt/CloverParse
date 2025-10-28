@@ -1,6 +1,6 @@
 import os
 
-from tokenise import Token, tokenise_line
+from preprocessor.tokenise import Token, tokenise_line
 from syntax.cfg_grammar import StandardRuleset as SR
 
 def import_file(file_path: str) -> {list[list[Token]] , list[Token]}:
@@ -42,7 +42,7 @@ def import_file(file_path: str) -> {list[list[Token]] , list[Token]}:
 
             program.extend(imported_tokens)
 
-        elif line.startswith('#PatternName '):
+        elif line.startswith('#PatternName'):
 
             name_start = line.find('(')
             name_end = line.find(')')
@@ -52,7 +52,7 @@ def import_file(file_path: str) -> {list[list[Token]] , list[Token]}:
             pattern = tokenise_line(pattern_exp)
 
         elif not line.startswith('#'):
-            tokens = tokenise_line(line, {})
+            tokens = tokenise_line(line)
 
             if len(tokens) > 0:
                 program.append(tokens)

@@ -1,0 +1,11 @@
+val1 = 5 * 10
+
+val2 = 6 * 10
+
+//Testing
+
+range = [0, 10]
+
+cond = range{val1, val2}B
+
+#PatternName(cond)

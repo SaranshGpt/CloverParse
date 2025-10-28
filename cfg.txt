@@ -54,7 +54,7 @@ Endianness  ->  'L' | 'B'
 
 ------------------------------------------------------------------------------------------------------------------
 
-Cond_Val    ->  Condition | '(' Expression ')' | C_IDENTIFIER | Expression | E_IDENTIFIER
+Cond_Val    ->  Condition | '(' Expression ')' | C_IDENTIFIER | E_IDENTIFIER
 
 Expression  ->  Expression '|' Exor
             |   Exor

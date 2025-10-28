@@ -1,8 +1,8 @@
 from enum import Enum, auto
 import re
 
-from parser.cfg_grammar import StandardRuleset as SR
-from parser.cfg_node import CFGNode
+from syntax.cfg_grammar import StandardRuleset as SR
+from syntax.cfg_node import CFGNode
 
 class Token(CFGNode):
 
@@ -72,6 +72,7 @@ class Token(CFGNode):
         if part.isdigit():
             self.type = SR.Tokens.NUMBER
             self.children = int(part)
+            return 
 
         spec = part[:2]
         num = part[2:]
@@ -104,14 +105,15 @@ def tokenise_line(line: str) -> list[Token]:
     if not line or line.isspace():
         return []
 
-    line.strip()
+    line = line.strip()
 
-    parts = re.split(r'[a-zA-Z0-9]+', line)
+    parts = re.findall(r'\w+|[^\w\s]', line)
 
     tokens: list = []
 
     for part in parts:
-        if part is None or part.iswhite():
+        part = part.strip()
+        if part is None or part.isspace() or part == '':
             continue
         
         token = Token(part)

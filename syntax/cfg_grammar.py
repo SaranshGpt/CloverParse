@@ -1,9 +1,9 @@
-from cfg_node import CFGNodeType, CFGNode, CFGRuleSet
+from syntax.cfg_node import CFGRuleSet
 from enum import Enum, auto
 
 class StandardRuleset(CFGRuleSet):
     
-    class Nodes(CFGRuleSet.NodeTypes):
+    class Nodes():
         ASSIGNMENT = auto()
 
         NUMBER = auto()
@@ -69,89 +69,93 @@ class StandardRuleset(CFGRuleSet):
 
     ruleset = {
         
-        [Types.NEW, Tokens.EQUALS, Nodes.VALUE]:                                Types.ASSIGNMENT,
-        [Types.NEW, Tokens.EQUALS, Nodes.RANGE]:                                Types.ASSIGNMENT,
-        [Types.NEW, Tokens.EQUALS, Nodes.CONDITION]:                            Types.ASSIGNMENT,
-        [Types.NEW, Tokens.EQUALS, Nodes.EXPRESSION]:                           Types.ASSIGNMENT,
+        (Types.NEW, Tokens.EQUALS, Nodes.VALUE):                                Nodes.ASSIGNMENT,
+        (Types.NEW, Tokens.EQUALS, Nodes.RANGE):                                Nodes.ASSIGNMENT,
+        (Types.NEW, Tokens.EQUALS, Nodes.CONDITION):                            Nodes.ASSIGNMENT,
+        (Types.NEW, Tokens.EQUALS, Nodes.EXPRESSION):                           Nodes.ASSIGNMENT,
 
-        [Types.VALUE]:                                                          Nodes.NUMBER,
-        [Tokens.NUMBER]:                                                        Nodes.NUMBER,
-        [Tokens.BRACKET_START, Nodes.VALUE, Tokens.BRACKET_END]:                Nodes.NUMBER,
-        [Tokens.NEGATION, Nodes.NUMBER]:                                        Nodes.NUMBER,
+        (Types.VALUE):                                                          Nodes.NUMBER,
+        (Tokens.NUMBER):                                                        Nodes.NUMBER,
+        (Tokens.BRACKET_START, Nodes.VALUE, Tokens.BRACKET_END):                Nodes.NUMBER,
+        (Tokens.NEGATION, Nodes.NUMBER):                                        Nodes.NUMBER,
 
-        [Nodes.VALUE, Tokens.OR, Nodes.VXOR]:                                   Nodes.VALUE,
-        [Nodes.VXOR]:                                                           Nodes.VALUE,
+        (Nodes.VALUE, Tokens.OR, Nodes.VXOR):                                   Nodes.VALUE,
+        (Nodes.VXOR):                                                           Nodes.VALUE,
 
-        [Nodes.VXOR, Tokens.XOR, Nodes.VAND]:                                   Nodes.VXOR,
-        [Nodes.VAND]:                                                           Nodes.VXOR,
+        (Nodes.VXOR, Tokens.XOR, Nodes.VAND):                                   Nodes.VXOR,
+        (Nodes.VAND):                                                           Nodes.VXOR,
 
-        [Nodes.VAND, Tokens.AND, Nodes.SUM]:                                    Nodes.VAND,
-        [Nodes.SUM]:                                                            Nodes.VAND,
+        (Nodes.VAND, Tokens.AND, Nodes.SUM):                                    Nodes.VAND,
+        (Nodes.SUM):                                                            Nodes.VAND,
 
-        [Nodes.SUM, Tokens.PLUS, Nodes.TERM]:                                   Nodes.SUM,
-        [Nodes.SUM, Tokens.MINUS, Nodes.TERM]:                                  Nodes.SUM,
-        [Nodes.TERM]:                                                           Nodes.SUM,
+        (Nodes.SUM, Tokens.PLUS, Nodes.TERM):                                   Nodes.SUM,
+        (Nodes.SUM, Tokens.MINUS, Nodes.TERM):                                  Nodes.SUM,
+        (Nodes.TERM):                                                           Nodes.SUM,
 
-        [Nodes.TERM, Tokens.MULTIPLY, Nodes.NUMBER]:                            Nodes.TERM,
-        [Nodes.TERM, Tokens.DIVIDE, Nodes.NUMBER]:                              Nodes.TERM,
-        [Nodes.TERM, Tokens.MODULO, Nodes.NUMBER]:                              Nodes.TERM,
-        [Nodes.NUMBER]:                                                         Nodes.TERM,
+        (Nodes.TERM, Tokens.MULTIPLY, Nodes.NUMBER):                            Nodes.TERM,
+        (Nodes.TERM, Tokens.DIVIDE, Nodes.NUMBER):                              Nodes.TERM,
+        (Nodes.TERM, Tokens.MODULO, Nodes.NUMBER):                              Nodes.TERM,
+        (Nodes.NUMBER):                                                         Nodes.TERM,
 
         
         
-        [Tokens.SQUARE_START, 
+        (Tokens.SQUARE_START, 
             Nodes.NUMBER, Tokens.COLON, Nodes.NUMBER, 
             Tokens.COMMA,
             Nodes.NUMBER, Tokens.COLON, Nodes.NUMBER, 
-        Tokens.SQUARE_END]:                                                     Nodes.RANGE,
-        [Tokens.SQUARE_START, 
+        Tokens.SQUARE_END):                                                     Nodes.RANGE,
+        (Tokens.SQUARE_START, 
             Nodes.NUMBER, Tokens.COLON, Nodes.NUMBER, 
             Tokens.COMMA,
             Nodes.NUMBER, 
-        Tokens.SQUARE_END]:                                                     Nodes.RANGE,
-        [Tokens.SQUARE_START, 
+        Tokens.SQUARE_END):                                                     Nodes.RANGE,
+        (Tokens.SQUARE_START, 
             Nodes.NUMBER, 
             Tokens.COMMA,
             Nodes.NUMBER, Tokens.COLON, Nodes.NUMBER,
-        Tokens.SQUARE_END]:                                                     Nodes.RANGE,
-        [Tokens.SQUARE_START, 
+        Tokens.SQUARE_END):                                                     Nodes.RANGE,
+        (Tokens.SQUARE_START, 
             Nodes.NUMBER, 
             Tokens.COMMA,
             Nodes.NUMBER,  
-        Tokens.SQUARE_END]:                                                     Nodes.RANGE,
-        [Nodes.RANGE, Nodes.RANGE]:                                             Nodes.RANGE,
-        [Types.RANGE]:                                                          Nodes.RANGE,
+        Tokens.SQUARE_END):                                                     Nodes.RANGE,
+        (Nodes.RANGE, Nodes.RANGE):                                             Nodes.RANGE,
+        (Types.RANGE):                                                          Nodes.RANGE,
 
 
 
-        [Nodes.RANGE, Nodes.CONDITION_BODY, Nodes.ENDIANNESS]:                  Nodes.CONDITION,
-        [Tokens.NEGATION, Nodes.CONDITION]:                                     Nodes.CONDITION,
-        [Types.CONDITION]:                                                      Nodes.CONDITION,
+        (Nodes.RANGE, Nodes.CONDITION_BODY, Nodes.ENDIANNESS):                  Nodes.CONDITION,
+        (Tokens.NEGATION, Nodes.CONDITION):                                     Nodes.CONDITION,
+        (Types.CONDITION):                                                      Nodes.CONDITION,
         
-        [Tokens.LESS_THAN, Nodes.NUMBER, 
+        (Tokens.LESS_THAN, Nodes.NUMBER, 
             Tokens.COMMA, 
-        Nodes.NUMBER, Tokens.GREATER_THAN]:                                     Nodes.CONDITION_BODY,
-        [Nodes.NUMBER_LIST, Tokens.CURLY_END]:                                  Nodes.CONDITION_BODY,
+        Nodes.NUMBER, Tokens.GREATER_THAN):                                     Nodes.CONDITION_BODY,
+        (Nodes.NUMBER_LIST, Tokens.CURLY_END):                                  Nodes.CONDITION_BODY,
 
-        [Nodes.NUMBER_LIST, Tokens.COMMA, Nodes.NUMBER]:                        Nodes.NUMBER_LIST,
-        [Tokens.CURLY_START, Nodes.NUMBER]:                                     Nodes.NUMBER_LIST,
+        (Nodes.NUMBER_LIST, Tokens.COMMA, Nodes.NUMBER):                        Nodes.NUMBER_LIST,
+        (Tokens.CURLY_START, Nodes.NUMBER):                                     Nodes.NUMBER_LIST,
 
-        [Tokens.LITTLE_ENDIAN]:                                                 Nodes.ENDIANNESS,
-        [Tokens.BIG_ENDIAN]:                                                    Nodes.ENDIANNESS,
+        (Tokens.LITTLE_ENDIAN):                                                 Nodes.ENDIANNESS,
+        (Tokens.BIG_ENDIAN):                                                    Nodes.ENDIANNESS,
 
-        [Nodes.CONDITION]:                                                      Nodes.COND_VAL,
-        [Tokens.BRACKET_START, Nodes.EXPRESSION, Tokens.BRACKET_END]:           Nodes.COND_VAL,
-        [Types.CONDITION]:                                                      Nodes.COND_VAL,
-        [Nodes.EXPRESSION]:                                                     Nodes.COND_VAL,
-        [Types.EXPRESSION]:                                                     Nodes.COND_VAL,
+        (Nodes.CONDITION):                                                      Nodes.COND_VAL,
+        (Tokens.BRACKET_START, Nodes.EXPRESSION, Tokens.BRACKET_END):           Nodes.COND_VAL,
+        (Types.CONDITION):                                                      Nodes.COND_VAL,
+        (Nodes.EXPRESSION):                                                     Nodes.COND_VAL,
+        (Types.EXPRESSION):                                                     Nodes.COND_VAL,
 
-        [Nodes.EXPRESSION, Tokens.OR, Nodes.XOR_EXPR]:                          Nodes.EXPRESSION,
-        [Nodes.XOR_EXPR]:                                                       Nodes.EXPRESSION,
+        (Nodes.EXPRESSION, Tokens.OR, Nodes.XOR_EXPR):                          Nodes.EXPRESSION,
+        (Nodes.XOR_EXPR):                                                       Nodes.EXPRESSION,
 
-        [Nodes.XOR_EXPR, Tokens.XOR, Nodes.AND_EXPR]:                           Nodes.XOR_EXPR,
-        [Nodes.AND_EXPR]:                                                       Nodes.XOR_EXPR,
+        (Nodes.XOR_EXPR, Tokens.XOR, Nodes.AND_EXPR):                           Nodes.XOR_EXPR,
+        (Nodes.AND_EXPR):                                                       Nodes.XOR_EXPR,
 
-        [Nodes.AND_EXPR, Tokens.AND, Nodes.COND_VAL]:                           Nodes.AND_EXPR,
-        [Nodes.COND_VAL]:                                                       Nodes.AND_EXPR,
+        (Nodes.AND_EXPR, Tokens.AND, Nodes.COND_VAL):                           Nodes.AND_EXPR,
+        (Nodes.COND_VAL):                                                       Nodes.AND_EXPR,
 
     }
+
+    def __init__(self):
+        super().__init__()
+        self.ruleset = StandardRuleset.ruleset

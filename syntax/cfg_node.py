@@ -1,7 +1,5 @@
 from abc import abstractmethod
-from token import Token
 from enum import Enum, auto
-
 
 class CFGNode:
 
@@ -9,15 +7,11 @@ class CFGNode:
         self.type = type
         self.children = children
 
-
 class CFGRuleSet:
-
-    class NodeTypes(Enum):
-        NEW = auto()
 
     @property
     @abstractmethod
-    def Nodes(self) -> NodeTypes:
+    def Nodes(self) -> Enum:
         pass
 
     @property
@@ -32,19 +26,24 @@ class CFGRuleSet:
 
     @property
     @abstractmethod
-    def ruleset(self) -> dict[list[Types], Types]:
+    def ruleset(self) -> dict[tuple, Types]:
         pass
 
-    def reduce(nodes: list[CFGNode]) -> bool:
+    def reduce(self, nodes: list[CFGNode]) -> bool:
 
         for start in range (len(nodes)):
             
             stack_slice = nodes[start:]
 
-            stack_slice_types = [node.type for node in stack_slice]
+            stack_slice_types = tuple([node.type for node in stack_slice])
 
-            if stack_slice_types in ruleset:
-                new_node_type = ruleset[stack_slice_types]
+            keys = self.ruleset.keys()
+            new_node_type = self.ruleset.get(stack_slice_types, None)
+
+            if new_node_type is None:
+                new_node_type = self.ruleset.get(stack_slice_types[0], None)
+
+            if new_node_type is not None:
 
                 new_node = CFGNode(new_node_type, stack_slice)
 

@@ -1,5 +1,9 @@
-from cfg_node import CFGNode, CFGRuleSet
-from cfg_grammar import StandardRuleset as SR
+from syntax.cfg_node import CFGNode, CFGRuleSet
+from syntax.cfg_grammar import StandardRuleset as SR
+
+from semantics.assignment import process_assignment
+from semantics.expression_node import Expression, process_expression
+from semantics.condition_node import process_condition
 
 def substitute_symbols(tokens: list[CFGNode], symbol_table: dict[str: CFGNode]) -> None:
     for token in tokens:
@@ -11,11 +15,13 @@ def substitute_symbols(tokens: list[CFGNode], symbol_table: dict[str: CFGNode]) 
             else:
                 token.type = SR.Types.NEW 
 
-def parse_line(tokens: list[CFGNode], ruleset: CFGRuleSet, symbol_table: dict[str: CFGNode]) -> CFGNode:
+def parse_line(tokens: list[CFGNode], symbol_table: dict[str: CFGNode]) -> CFGNode:
     
     substitute_symbols(tokens, symbol_table)
 
     parse_stack: list[CFGNode] = []
+
+    ruleset = SR()
 
     for token in tokens:
 
@@ -32,7 +38,7 @@ def parse_line(tokens: list[CFGNode], ruleset: CFGRuleSet, symbol_table: dict[st
     return parse_stack[0]
 
 
-def parse_program(program: list[list[CFGNode]], pattern: list[CFGNode]) -> CFGNode:
+def parse_program(program: list[list[CFGNode]], pattern: list[CFGNode]) -> Expression:
     if (len(pattern) == 0):
         raise ValueError("No pattern provided for parsing.")
     
@@ -40,4 +46,15 @@ def parse_program(program: list[list[CFGNode]], pattern: list[CFGNode]) -> CFGNo
 
     for line_tokens in program:
         node = parse_line(line_tokens, symbol_table)
-        process_node(node, symbol_table)
+        process_assignment(node, symbol_table)
+
+    pattern_node = parse_line(pattern, symbol_table)
+
+    match pattern_node.type:
+        case SR.Nodes.CONDITION:
+            condition = process_condition(pattern_node)
+            return Expression(condition)
+        case SR.Nodes.EXPRESSION:
+            return process_expression(pattern_node)
+        case _:
+            raise ValueError("Pattern did not parse to a condition or expression.")

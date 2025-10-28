@@ -1,19 +1,23 @@
 from syntax.cfg_grammar import StandardRuleset as SR
 from syntax.cfg_node import CFGNode
 
-def process_number(node: CFGNode) -> int:
+from primitives.value import Value
+
+def process_number(node: CFGNode) -> Value:
     if node.type != SR.Types.NUMBER:
         raise ValueError("Node is not a number.")
 
     match node.children[0].type:
         case SR.Tokens.NUMBER:
-            return int(node.children[0].children)
+            return Value(int(node.children[0].children))
         case SR.Tokens.NEGATION:
-            return -process_value(node.children[1])
+            ret: Value = (~process_value(node.children[1]))
+            ret.negated = True
+            return ret
         case SR.Tokens.BRACKET_START:
-            return process_value(node.children[1]) 
+            return (process_value(node.children[1]))
 
-def process_value(node: CFGNode) -> int:
+def process_value(node: CFGNode) -> Value:
     
     node_type = node.type
 
