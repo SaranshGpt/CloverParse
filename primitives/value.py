@@ -8,7 +8,6 @@ class Value:
 
     def __init__(self, val: int):
         self.val = val
-        self.negated = False
 
     def __add__(self, other):
         return Value(self.val + other.val)
@@ -16,7 +15,7 @@ class Value:
     def __sub__(self, other):
         return Value(self.val - other.val)
     
-    def __multiply__(self, other):
+    def __mul__(self, other):
         return Value(self.val * other.val)
     
     def __floor_divide__(self, other):

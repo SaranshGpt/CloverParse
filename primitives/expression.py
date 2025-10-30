@@ -10,48 +10,51 @@ class Expression:
         OR = auto()
         XOR = auto()
         AND = auto()
+        NEGATE = auto()
 
         PUSH = auto()
 
     def __init__(self, condition: Condition):
-        self.expression = [condition]
+        self.conditions = [condition]
+        self.operations = [Expression.Operation.PUSH]
+
+    def append_condition(self, operation: Operation, condition: Condition) -> None:
+        self.conditions.append(condition)
+        self.operations.append(Expression.Operation.PUSH)
+        self.operations.append(operation)
 
     def append_expression(self, operation: Operation, other) -> None:
-        self.expression.extend(other.expression)
-        self.expression.append(operation)
+        self.conditions.extend(other.conditions)
+        self.operations.extend(other.operations)
+        self.operations.append(operation)
+
+    def negate(self) -> None:
+        self.operations.append(Expression.Operation.NEGATE)
 
     def serialize(self) -> bytes:
 
-        conditions = []
-        operations = []
+        ret = bytes()
 
-        for item in self.expression:
-            match item:
-                case Condition():
-                    conditions.append(item)
-                    operations.append(Expression.Operation.PUSH)
-                    
-                case Expression.Operation():
-                    operations.append(item)
+        num_conditions = len(self.conditions)
 
-        num_conditions = len(conditions)
+        ret += num_conditions.to_bytes(2, 'big')
 
-        ret = num_conditions.to_bytes(2)
+        for condition in self.conditions:
+            ret += condition.serialize()
 
-        for cond in conditions:
-            ret += cond.serialize()
-        
-        for op in operations:
-            match op:
+        for operation in self.operations:
+            match operation:
                 case Expression.Operation.OR:
-                    ret += (1).to_bytes(1)
+                    ret += bytes([0x01])
                 case Expression.Operation.XOR:
-                    ret += (2).to_bytes(1)
+                    ret += bytes([0x02])
                 case Expression.Operation.AND:
-                    ret += (3).to_bytes(1)
+                    ret += bytes([0x03])
+                case Expression.Operation.NEGATE:
+                    ret += bytes([0x04])
                 case Expression.Operation.PUSH:
-                    ret += (0).to_bytes(1)
+                    ret += bytes([0x00])
                 case _:
-                    raise ValueError("Invalid operation in expression.")
+                    raise ValueError(f"Unknown operation type: {operation}")
                 
         return ret

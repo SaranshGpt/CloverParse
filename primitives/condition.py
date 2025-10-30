@@ -14,7 +14,6 @@ class Condition:
         self.range = range
         self.data = data
         self.endianness = endianness
-        self.negated = False
 
     def _get_params(self) -> bytes:
 
