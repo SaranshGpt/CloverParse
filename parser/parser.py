@@ -74,6 +74,8 @@ def parse_file(file_path) -> tuple[dict[str, any], Expression | None]:
 
             if pattern_expression is None or next_ind != len(pattern_tokens):
                 raise ValueError(f"Invalid pattern expression in line: {line}")
+            
+            continue
 
         tokens = tokenize(line)
 

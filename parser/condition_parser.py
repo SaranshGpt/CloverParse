@@ -49,33 +49,54 @@ def get_condition(tokens: list[Token], symbol_table: dict[str, any]) -> tuple[Co
 
         values = []
 
-        while True:
-
-            value, val_ind = get_value(tokens[next_ind:], symbol_table)
+        if condition_type == Condition.Type.RANGE:
+            value, value_ind = get_value(tokens[next_ind:], symbol_table)
 
             if value is None:
-                break
+                return None, 0
+
+            values.append(value)
+
+            next_ind += value_ind
+
+            if tokens[next_ind].type != Token.Type.COMMA:
+                return None, 0
+            
+            next_ind += 1
+
+            value, value_ind = get_value(tokens[next_ind:], symbol_table)
+
+            if value is None:
+                return None, 0
             
             values.append(value)
 
-            if condition_type == Condition.Type.RANGE and len(range) == 2:
-                break
+            next_ind += value_ind
 
-            if condition_type == Condition.Type.SELECTION and tokens[next_ind + val_ind].type == Token.Type.CURLY_CLOSE:
-                next_ind += val_ind
-                break
-
-            next_ind += val_ind
-
-            if tokens[next_ind].type == Token.Type.COMMA:
-                next_ind += 1
-            elif condition_type == Condition.Type.SELECTION and tokens[next_ind].type == Token.Type.CURLY_CLOSE or condition_type == Condition.Type.RANGE and tokens[next_ind].type == Token.Type.GREATER_THAN:
-                next_ind += 1
-                break
-            else:
+            if tokens[next_ind].type != Token.Type.GREATER_THAN:
                 return None, 0
+            next_ind += 1
+        elif condition_type == Condition.Type.SELECTION:
+            while tokens[next_ind].type != Token.Type.CURLY_CLOSE:
+                value, value_ind = get_value(tokens[next_ind:], symbol_table)
+
+                if value is None:
+                    return None, 0
+                
+                values.append(value)
+
+                next_ind += value_ind
+
+                if tokens[next_ind].type == Token.Type.COMMA:
+                    next_ind += 1
+                elif tokens[next_ind].type == Token.Type.CURLY_CLOSE:
+                    break
+                else:
+                    return None, 0
 
         endianness = None
+
+        next_ind += 1
 
         match tokens[next_ind].type:
             case Token.Type.LITTLE_ENDIAN:
@@ -85,12 +106,12 @@ def get_condition(tokens: list[Token], symbol_table: dict[str, any]) -> tuple[Co
                 endianness = Value.Endianness.BIG
                 next_ind += 1
             case _:
-                raise ValueError("Endianness not specified in condition.")
+                return None, 0
 
         condition = Condition(
-            type=condition_type,
+            cond_type=condition_type,
             range=range,
-            values=values,
+            data=values,
             endianness=endianness
         )
 

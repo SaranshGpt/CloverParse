@@ -45,7 +45,7 @@ def get_range(tokens: list[Token], symbol_table: dict[str: any]) -> tuple[Range 
 
             final_ind += next_ind + 1
 
-            range = Range(start_ind, end_ind, s_offset, e_offset)
+            range = Range(start_ind, s_offset, end_ind, e_offset)
             
             if (final_ind < len(tokens) and tokens[final_ind].type == Token.Type.SQUARE_CLOSE):
                 final_ind += 1
@@ -54,6 +54,8 @@ def get_range(tokens: list[Token], symbol_table: dict[str: any]) -> tuple[Range 
 
         case Token.Type.IDENTIFIER:
             range = symbol_table[tokens[0].value]
+            if range.__class__ != Range:
+                return None, 0
             final_ind = 1
         case _:
             return None, 0

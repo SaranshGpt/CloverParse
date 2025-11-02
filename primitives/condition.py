@@ -25,9 +25,7 @@ class Condition:
 
         endianness = (1 if self.endianness == Value.Endianness.LITTLE else 0)
 
-        negation = (1 if self.negated else 0)
-
-        consolidated_val = (start_index << 24) | (end_index << 8) | (endianness << 7) | (negation << 6) | (s_offset << 3) | e_offset
+        consolidated_val = (start_index << 24) | (end_index << 8) | (endianness << 7) | (s_offset << 3) | e_offset
 
         return consolidated_val.to_bytes(5, byteorder='big')
     
@@ -60,15 +58,15 @@ class Condition:
 
         length = self.range.end - self.range.start
 
-        ret: bytes
+        ret: bytes = b''
 
         for i in range(num_vals):
             val = Value(self.data[i])
             ret += val.get_bytes(length, self.endianness, self.range.s_offset, self.range.e_offset)
 
-        return length.to_bytes(2) + ret;
+        return num_vals.to_bytes(2) + ret;
 
-    def create_binary(self) -> bytes:
+    def serialize(self) -> bytes:
 
         enum_val: int
         packet_bytes: bytes

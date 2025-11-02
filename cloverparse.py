@@ -22,7 +22,7 @@ def __main__():
     ret: bytes = pattern_expression.serialize()
 
     with open(output_path, "wb") as output_file:
-        output_file.write(ret)
+        output_file.write(ret.hex().encode("ascii"))
 
     print(f"Output written to {output_path}")
 

@@ -119,4 +119,10 @@ def get_expression(tokens: list[Token], symbol_table: dict[str, any]) -> tuple[E
                     case _:
                         raise ValueError(f"Invalid token in postfix expression: {val.type}")
                     
+    ret = expression_stack[0]
+
+    if ret.__class__ == Condition:
+        ret = Expression(ret)
+
+    return ret, end_index
     

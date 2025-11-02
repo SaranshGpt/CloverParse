@@ -6,8 +6,12 @@ class Value:
         LITTLE = auto()
         BIG = auto()
 
-    def __init__(self, val: int):
-        self.val = val
+    def __init__(self, val):
+        
+        if type(val) == Value:
+            self.val = val.val
+        else:
+            self.val = val
 
     def __add__(self, other):
         return Value(self.val + other.val)
@@ -55,7 +59,10 @@ class Value:
 
             midval = get_int_bitsection(val, 8 - start_offset, tot_len - (8 - start_offset) - end_offset)
 
-            ret = lsval.to_bytes(1, byteorder='little') + midval.to_bytes(length - 2, byteorder='little') + msval.to_bytes(1, byteorder='little')
+            msbytes = msval.to_bytes(1, byteorder='big') if end_offset > 0 else b''
+            lsbytes = lsval.to_bytes(1, byteorder='big') if start_offset < 8 else b''
+
+            ret = lsbytes + midval.to_bytes(length - 2, byteorder='little') + msbytes
             
         else:
             
@@ -64,6 +71,9 @@ class Value:
 
             midval = get_int_bitsection(val, end_offset, tot_len - (8 - start_offset) - end_offset)
 
-            ret = msval.to_bytes(1, byteorder='big') + midval.to_bytes(length - 2, byteorder='big') + lsval.to_bytes(1, byteorder='big')
+            lsbytes = lsval.to_bytes(1, byteorder='big') if end_offset > 0 else b''
+            msbytes = msval.to_bytes(1, byteorder='big') if start_offset < 8 else b''
+
+            ret = msbytes + midval.to_bytes(length - 2, byteorder='big') + lsbytes
 
         return ret

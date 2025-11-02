@@ -8,4 +8,4 @@ range = [0, 10]
 
 cond = range{val1, val2}B
 
-#PatternName(cond)
+#pattern(cond)
